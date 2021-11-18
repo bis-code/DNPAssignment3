@@ -1,0 +1,178 @@
+﻿@page "/Families"
+@using Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.Diagnostics
+@using WebClient.Data
+@inject IFamilyService FamilyService
+@inject NavigationManager NavigationManager
+
+@if (errorMessage != null)
+{
+    <h1>@errorMessage</h1>
+}
+else
+{
+    <h1>Family list</h1>
+}
+
+<div class="container row">
+    <div class="col-lg-4">
+        <p>
+            Filter by Family Id: <input type="number" @oninput="@((arg) => FilterByUserId(arg))" style="width: 50px"/>
+        </p>
+    </div>
+</div>
+<p>
+</p>
+
+<!--- Whenever this page is requested, the code will be evealuated and
+replaced with its result, thereby building the resulting html page,
+which is shown in the browser. --->
+@if (families == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!families.Any())
+{
+    <p>
+        <em>No Family items exist. Please add some.</em>
+    </p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Family</th>
+                <th scope="col">Adults</th>
+                <th scope="col">Children</th>
+                <th scope="col">Pets</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in families)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="Images/Families/@item.Photo" alt="Family photo" style="width: 45px; height: 45px;" class="rounded-circle">
+                            <div class="mx-3">
+                                <p class="fw-bold mb-1">Family ID: @item.Id</p>
+                                <p class="text-muted mb-0">Address Info: @item.StreetName, Nr. @item.HouseNumber</p>
+                                @if (item.Adults.Count > 0)
+                                {
+                                    <p class="text-info mb-0">Familyname: @item.Adults[0].LastName</p>
+                                }
+                                else
+                                {
+                                    <p class="text-info mb-0">No adults added.</p>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td>@item.Adults.Count</td>
+                    <td>@item.Children.Count</td>
+                    <td>@PetCount(item)</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="@(() => MoreInfo(@item.Id))">
+                            More INFO
+                        </button>
+                    </td>
+
+                    <td>
+                        <button @onclick="@(() => RemoveFamily(item.Id))">
+
+                            <i class="oi oi-trash" style="color: red"/>
+                        </button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private IList<Family> families;
+    private IList<Family> allFamilies;
+    private ClaimsPrincipal _userClaimsPrincipal;
+    private string? errorMessage;
+    private User _user;
+
+    private int? filterById;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            allFamilies = await FamilyService.GetAllFamiliesAsync();
+            families = allFamilies;
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+
+    public void RemoveFamily(int id)
+    {
+        try
+        {
+            Family adultToRemove = allFamilies.First(f => f.Id == id);
+            FamilyService.RemoveFamilyAsync(id);
+            allFamilies.Remove(adultToRemove);
+            families.Remove(adultToRemove);
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+    
+    public void MoreInfo(int IdFamily)
+    {
+        NavigationManager.NavigateTo($"FamilyInfo/{IdFamily}");
+    }
+
+    private void FilterByUserId(ChangeEventArgs changeEventArgs)
+    {
+        filterById = null;
+        try
+        {
+            filterById = int.Parse(changeEventArgs.Value.ToString());
+        }
+        catch (Exception e)
+        {
+        }
+        if (filterById != null)
+        {
+            families = allFamilies.Where(f => f.Id == filterById).ToList();
+        }
+        else
+        {
+            families = allFamilies;
+        }
+        ExecuteFilterFamily();
+    }
+    private void ExecuteFilterFamily()
+    {
+        families = allFamilies.Where(f => (filterById != null && f.Id == filterById
+                                           || filterById == null)).ToList();
+    }
+    
+    //------ * Methods in page * ------\\
+    private int PetCount(Family family)
+    {
+        int counter = 0;
+        foreach (var child in family.Children)
+        {
+            counter += child.Pets.Count;
+        }
+        counter += family.Pets.Count;
+        return counter;
+    }
+}

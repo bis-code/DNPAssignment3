@@ -1,0 +1,153 @@
+﻿@* @page "/Profile/{Username}" *@
+@* @using Models *@
+@* @using FirstAssignmentDNP.Data *@
+@* @inject IUsersData UsersData *@
+@* @inject NavigationManager NavigationManager *@
+@* <div class="container"> *@
+@* <div class="row d-flex justify-content-center"> *@
+@*     <div class="col-md-10 mt-5 pt-5"> *@
+@*         <div class="row z-depth-3"> *@
+@*             <div class="col-sm-4 bg-info rounded-left"> *@
+@*                 <div class="card-block text-center text-white"> *@
+@*                     <i class="fas fa-user-tie fa-7x mt-5"></i> *@
+@*                     <h2 class="font-weight-bold mt-4">@_user.Username</h2> *@
+@*                     <p>Profile info</p> *@
+@*                     <img src="Images/Users/@_user.Photo" alt="Profile photo" style="width: 60px; height: 60px;" class="rounded-circle"> *@
+@*                     <i class="far fa-edit-tie fa-2x mb-5"></i> *@
+@*                 </div> *@
+@*             </div> *@
+@*             <div class="col-sm-8 bg-white rounded-right"> *@
+@*                 <h3 class="mt-3 text-center">Information</h3> *@
+@*                 <hr class="badge-primary mt-0 w-25"> *@
+@*                 <div class="row"> *@
+@*                     <div class="col-sm-6"> *@
+@*                         <p class="font-weight-bold">First name: @_user.FirstName</p> *@
+@*                     </div> *@
+@*                     <div class="col-sm-6"> *@
+@*                         <p class="font-weight-bold">Last name: @_user.LastName</p> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* $1$                     @if (_user.Person != null) #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <div class="row"> #1# *@
+@* $1$                             <div class="col-sm-6"> #1# *@
+@* $1$                                 <p class="font-weight-bold">Hair color: @_user.Person.HairColor</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-6"> #1# *@
+@* $1$                                 <p class="font-weight-bold">Eye color: @_user.Person.EyeColor</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                         <div class="row"> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-bold">Weight: @_user.Person.Weight</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-bold">Height: @_user.Person.Height</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-bold">Sex: @_user.Person.Sex</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                     else #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <div class="col-sm-12"> #1# *@
+@* $1$                             No IRL Informations given.. #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                     @if (_user.Role.Equals("Admin")) #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <div class="col-sm-6"> #1# *@
+@* $1$                             <p class="btn btn-warning btn-sm">@_user.Role level @_user.SecurityLevel</p> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                     else #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <div class="col-sm-6"> #1# *@
+@* $1$                             <p class="btn btn-info btn-sm">@_user.Role</p> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                     @if (_user.Family != null) #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <h4 class="mt-3">Family Info</h4> #1# *@
+@* $1$                         <hr class="bg-primary"> #1# *@
+@* $1$                         <img src="Images/Families/@_user.Family.Photo" alt="Family photo" style="width: 45px; height: 45px;"/> #1# *@
+@* $1$                         <div class="row"> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-lighter">Id: @_user.Family.Id </p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-lighter">HouseNumber: @_user.Family.HouseNumber</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 <p class="font-weight-lighter">StreetNumber: @_user.Family.StreetName</p> #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                         <div class="row"> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 @if (_user.Family.Adults.Count > 0) #1# *@
+@* $1$                                 { #1# *@
+@* $1$                                     <p class="font-weight-bold">Adults: @_user.Family.Adults.Count</p> #1# *@
+@* $1$                                 } #1# *@
+@* $1$                                 else #1# *@
+@* $1$                                 { #1# *@
+@* $1$                                     <p class="text-muted">No adults</p> #1# *@
+@* $1$                                 } #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                 @if (_user.Family.Children.Count > 0) #1# *@
+@* $1$                                 { #1# *@
+@* $1$                                     <p class="font-weight-bold">Children: @_user.Family.Children.Count</p> #1# *@
+@* $1$                                 } #1# *@
+@* $1$                                 else #1# *@
+@* $1$                                 { #1# *@
+@* $1$                                     <p class="text-muted">No children</p> #1# *@
+@* $1$                                 } #1# *@
+@* $1$                             </div> #1# *@
+@* $1$                             <div class="col-sm-4"> #1# *@
+@* $1$                                                         @if (_user.Family.Pets.Count > 0) #1# *@
+@* $1$                                                         { #1# *@
+@* $1$                                                             <p class="font-weight-bold">Pets: @_user.Family.Pets.Count</p> #1# *@
+@* $1$                                                         } #1# *@
+@* $1$                                                         else #1# *@
+@* $1$                                                         { #1# *@
+@* $1$                                                             <p class="text-muted">No pets</p> #1# *@
+@* $1$                                                         } #1# *@
+@* $1$                                                     </div> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                     else #1# *@
+@* $1$                     { #1# *@
+@* $1$                         <div class="col-sm-6"> #1# *@
+@* $1$                             <button type="button" class="btn btn-primary btn-sm" @onclick="@(() => AddFamilyToUser(_user.Id))"> Add Family</button> #1# *@
+@* $1$                         </div> #1# *@
+@* $1$                     } #1# *@
+@* $1$                 </div> #1# *@
+@* $1$             </div> #1# *@
+@* $1$         </div> #1# *@
+@* $1$     </div> #1# *@
+@* $1$ </div> #1# *@
+@* *@
+@* @code { *@
+@* *@
+@*     [Parameter] *@
+@*     public string username { get; set; } *@
+@* *@
+@*     private User _user; *@
+@* *@
+@*     protected override async Task OnParametersSetAsync() *@
+@*     { *@
+@*         _user = await UsersData.GetUserAsync(username); *@
+@*     } *@
+@* *@
+@*     private void AddFamilyToUser(int Id) *@
+@*     { *@
+@*         NavigationManager.NavigateTo($"/AddFamily/{Id}"); *@
+@*     } *@
+@* *@
+@* } *@

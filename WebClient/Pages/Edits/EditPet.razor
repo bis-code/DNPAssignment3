@@ -1,0 +1,83 @@
+﻿@page "/EditPet/{IdFamily:int}/{Index:int}/{Id:int}"
+@using WebClient.Data
+@using Microsoft.AspNetCore.Components
+@using Models
+@inject IFamilyService FamilyService
+@inject NavigationManager NavigationManager
+@if (_petToEdit == null)
+{
+    <div class="text-center">
+        <h1>There's no child with this Id...</h1>
+    </div>
+}
+else
+{
+    <EditForm Model="@_petToEdit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputFirstname">Species</label>
+                <input type="text" class="form-control" id="inputFirstname" @bind-value="_petToEdit.Species"/>
+            </div>
+            <div class="form-group col-md-4">
+            </div>
+            <div class="form-group col-md-2">
+                        </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="inputAge">Name</label>
+                <input type="text" class="form-control col-md-2" @bind-value="_petToEdit.Name"/>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="inputSex">Sex</label>
+                <input type="number" class="form-control" id="inputSex" @bind-value="_petToEdit.Age"/>
+            </div>
+            <div class="form-group col-md-2">
+              
+            </div>
+            <div class="form-group col-md-2">
+               
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
+                  <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public int IdFamily { get; set; }
+    
+    [Parameter]
+    public int Index { get; set; }
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    private Pet _petToEdit = new Pet();
+    private Family _family = new Family();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _family = await FamilyService.GetFamilyAsync(IdFamily);
+        _petToEdit = _family.Children.First(c => c.Id == Index).Pets.First(p => p.Id == Id);
+    }
+
+    public void Save()
+    {
+        int indexOfPet = _family.Children.First(c => c.Id == Index).Pets.IndexOf(_petToEdit);
+        _family.Children.First(c => c.Id == Index).Pets[indexOfPet] = _petToEdit;
+        FamilyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+    
+    public void Remove()
+    {
+        _family.Children.First(c => c.Id == Index).Pets.Remove(_petToEdit);
+        FamilyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+
+}

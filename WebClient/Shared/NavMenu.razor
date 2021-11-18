@@ -1,0 +1,91 @@
+﻿@using WebClient.Authentication.Impl
+@using WebClient.Data
+@using Models
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">DNPAssignment3</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Families">
+                <span class="oi oi-home" aria-hidden="true"></span> Families
+            </NavLink>
+        </li>
+        @* <li class="nav-item px-3"> *@
+        @*     <NavLink class="nav-link" @onclick="MyProfile"> *@
+        @*         <span class="oi oi-info" aria-hidden="true"></span> My Profile *@
+        @*     </NavLink> *@
+        @* *@
+        @* </li> *@
+         <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="AddFamily" Match="NavLinkMatch.All">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Add Family
+                            </NavLink>
+                        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="login" @onclick="PerformLogout">
+                <span class="oi oi-account-logout" aria-hidden="true"></span>Log out
+            </NavLink>
+        </li>
+                    
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string username;
+    private string password;
+    private string errormessage;
+
+    private User _user;
+
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthStat { get; set; }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+        var user = (await AuthStat).User;
+        if (user.Identity.IsAuthenticated)
+        {
+            username = user.Identity.Name;
+        }
+
+    }
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    public async Task PerformLogout()
+    {
+        errormessage = "";
+        username = "";
+        password = "";
+
+        try
+        {
+            ((CustomAuthenticationStateProvider) AuthenticationStateProvider).Logout();
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+        }
+    }
+}

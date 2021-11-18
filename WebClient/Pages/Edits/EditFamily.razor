@@ -1,0 +1,48 @@
+﻿@page "/EditFamily/{Id:int}"
+@using Models
+@using WebClient.Data
+@using Microsoft.AspNetCore.Components
+@inject IFamilyService familyService
+@inject NavigationManager NavigationManager
+@if (familyToEdit == null)
+{
+    <div class="text-center">
+        <h1>There's no family with this Id...</h1>
+    </div>
+}
+else
+{
+    <EditForm Model="@familyToEdit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputStreetname">Street name</label>
+                <input type="text" class="form-control" id="inputStreetname" @bind-value="familyToEdit.StreetName"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputHousenumber">House number</label>
+                <input type="text" class="form-control" id="inputHousenumber" @bind-value="familyToEdit.HouseNumber"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Family familyToEdit;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        familyToEdit = await familyService.GetFamilyAsync(Id);
+    }
+
+    public void Save()
+    {
+        familyService.UpdateAsync(familyToEdit);
+        NavigationManager.NavigateTo($"/FamilyInfo/{Id}");
+    }
+
+}

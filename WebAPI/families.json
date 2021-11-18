@@ -1,0 +1,254 @@
+[
+  {
+    "Id": 9,
+    "Photo": "default.png",
+    "StreetName": "SEASDAS",
+    "HouseNumber": 12314,
+    "Adults": [
+      {
+        "JobTitle": {
+          "JobTitle": "Call Center Agent",
+          "Salary": 20308
+        },
+        "Id": 14,
+        "FirstName": "Isiah",
+        "LastName": "Esparza",
+        "HairColor": "Brown",
+        "EyeColor": "Brown",
+        "Age": 44,
+        "Weight": 81.8,
+        "Height": 172,
+        "Sex": "M",
+        "Photo": null
+      }
+    ],
+    "Children": [
+      {
+        "Interests": [
+          {
+            "Type": "Hockey",
+            "Description": "Not the one on ice"
+          },
+          {
+            "Type": "Tractors",
+            "Description": "My nephew loves these"
+          },
+          {
+            "Type": "Choir Singing",
+            "Description": "Aka covey super spreader event"
+          },
+          {
+            "Type": "Bowling",
+            "Description": "Balls to the pins"
+          },
+          {
+            "Type": "Ninja Turtles",
+            "Description": "Young, genetically modified, secret assassin tortoise"
+          },
+          {
+            "Type": "Scout",
+            "Description": "Gotta get all the emblems"
+          },
+          {
+            "Type": "Drawing",
+            "Description": "Or doodling"
+          }
+        ],
+        "Pets": [],
+        "Id": 31,
+        "FirstName": "Audriana",
+        "LastName": "Esparza",
+        "HairColor": "Black",
+        "EyeColor": "Brown",
+        "Age": 13,
+        "Weight": 45.73,
+        "Height": 157,
+        "Sex": "F",
+        "Photo": null
+      }
+    ],
+    "Pets": []
+  },
+  {
+    "Id": 12,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 0,
+    "Adults": [
+      {
+        "JobTitle": {
+          "JobTitle": "JobTest",
+          "Salary": 23141
+        },
+        "Id": 1,
+        "FirstName": "Das",
+        "LastName": "Baicoianu",
+        "HairColor": "Dark",
+        "EyeColor": "Dark",
+        "Age": 123,
+        "Weight": 123,
+        "Height": 123,
+        "Sex": "M",
+        "Photo": "default.png"
+      }
+    ],
+    "Children": [
+      {
+        "Interests": [],
+        "Pets": [
+          {
+            "Id": 1,
+            "Species": "Species",
+            "Name": "Name",
+            "Age": 12
+          }
+        ],
+        "Id": 1,
+        "FirstName": "Ionut",
+        "LastName": null,
+        "HairColor": "Dark",
+        "EyeColor": "Dark",
+        "Age": 123,
+        "Weight": 123,
+        "Height": 123,
+        "Sex": "M",
+        "Photo": "default.png"
+      }
+    ],
+    "Pets": []
+  },
+  {
+    "Id": 13,
+    "Photo": "default.png",
+    "StreetName": "sad",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 14,
+    "Photo": "default.png",
+    "StreetName": "DSAdasd",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 15,
+    "Photo": "default.png",
+    "StreetName": "asdasd",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 16,
+    "Photo": "default.png",
+    "StreetName": "DAD",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 19,
+    "Photo": "default.png",
+    "StreetName": "Asd",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 21,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 0,
+    "Adults": [
+      {
+        "JobTitle": {
+          "JobTitle": "TCPJob",
+          "Salary": 123251
+        },
+        "Id": 1,
+        "FirstName": "Ionut",
+        "LastName": "Baicoianu",
+        "HairColor": "Dark",
+        "EyeColor": "Dark",
+        "Age": 23,
+        "Weight": 123,
+        "Height": 123,
+        "Sex": "M",
+        "Photo": "default.png"
+      }
+    ],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 22,
+    "Photo": "default.png",
+    "StreetName": "asds",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 23,
+    "Photo": "default.png",
+    "StreetName": "sdasd",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 24,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 25,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 12,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 26,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 12,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 27,
+    "Photo": "default.png",
+    "StreetName": "Kamtjatka",
+    "HouseNumber": 12,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  },
+  {
+    "Id": 28,
+    "Photo": "default.png",
+    "StreetName": "xd",
+    "HouseNumber": 0,
+    "Adults": [],
+    "Children": [],
+    "Pets": []
+  }
+]

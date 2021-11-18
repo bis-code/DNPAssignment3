@@ -1,0 +1,82 @@
+﻿@page "/EditChild/{IdFamily:int}/{Index:int}"
+@using Models
+@using Microsoft.AspNetCore.Components
+@using WebClient.Data
+@inject IFamilyService familyService
+@inject NavigationManager NavigationManager
+<h3>EditChild, @Index</h3>
+<EditForm Model="@childToEdit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputFirstname">First name</label>
+                <input type="text" class="form-control" id="inputFirstname" @bind-value="childToEdit.FirstName"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputLastname">Last name</label>
+                <input type="text" class="form-control" id="inputLastname" @bind-value="childToEdit.LastName"/>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputHairColor">Hair Color</label>
+                <input type="text" class="form-control" id="inputHairColor" @bind-value="childToEdit.HairColor"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputEyeColor">Eye Color</label>
+                <input type="text" class="form-control" id="inputEyeColor" @bind-value="childToEdit.EyeColor"/>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputAge">Age</label>
+                <input type="number" class="form-control col-md-2" @bind-value="childToEdit.Age"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputSex">Sex</label>
+                <input type="text" class="form-control" id="inputSex" @bind-value="childToEdit.Sex"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputWeight">Weight</label>
+                <input type="text" class="form-control" id="inputWeight" @bind-value="childToEdit.Weight"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputHeight">Height</label>
+                <input type="text" class="form-control" id="inputHeight" @bind-value="childToEdit.Height"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
+        <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+    </EditForm>
+
+@code {
+
+    [Parameter]
+    public int IdFamily { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+    private Child childToEdit = new Child();
+    private Family _family = new Family();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _family = await familyService.GetFamilyAsync(IdFamily);
+        childToEdit = _family.Children[Index];
+    }
+
+    public void Save()
+    {
+        _family.Children[Index] = childToEdit;
+        familyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+
+    public void Remove()
+    {
+        _family.Children.Remove(childToEdit);
+        familyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+
+}

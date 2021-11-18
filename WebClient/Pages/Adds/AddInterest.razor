@@ -1,0 +1,44 @@
+﻿@page "/AddInterest/{IdFamily:int}/{ChildId:int}"
+@using Models
+@using WebClient.Data
+@using Microsoft.AspNetCore.Components
+@inject IFamilyService FamilyService
+@inject NavigationManager NavigationManager
+<EditForm Model="@_newInterest">
+        <div class="form-group col-md-6">
+            <label for="inputNumber">Type</label>
+            <input type="number" id="inputNumber" class="form-control col-md-2" @bind-value="_newInterest.Type"/>
+        </div>
+        <div class="form-group col-md-4 w-50 h-50">
+            <label for="inputStreetName">Description</label>
+            <input type="text" class="form-control" id="inputStreetName" @bind-value="_newInterest.Description"/>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="AddInterestToChild">Add</button>
+    </EditForm>
+@code {
+
+    [Parameter]
+    public int IdFamily { get; set; }
+
+    [Parameter]
+    public int ChildId { get; set; }
+
+    
+    private Family _family = new Family();
+    private Interest _newInterest = new Interest();
+
+    protected override async Task OnParametersSetAsync()
+
+    {
+        _family = await FamilyService.GetFamilyAsync(IdFamily);
+    }
+
+    public void AddInterestToChild()
+    {
+        _family.Children.First(c => c.Id == ChildId).Interests.Add(_newInterest);
+        FamilyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+
+
+}

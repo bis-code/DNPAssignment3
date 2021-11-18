@@ -1,0 +1,451 @@
+﻿@page "/FamilyInfo/{IdFamily:int}"
+@using Models
+@using WebClient.Data
+@inject IFamilyService FamiliesData
+@inject NavigationManager NavigationManager
+<section>
+@if (_family == null)
+{
+    <h1>This is family does not exist.</h1>
+}
+else
+{
+    <div class="container text-center row">
+    <div class="col-lg-4">
+        <div class="col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <img src="Images/Families/@_family.Photo" alt="Family photo" style="height: 100px; width: 100px"class="rounded-circle card-img-top"/>
+                    <div class="card-text">
+                        @if (_family.Adults.Count > 0)
+                        {
+                            <h3>Family name: @_family.Adults[0].LastName</h3>
+                        }
+                        else
+                        {
+                            <p>*Family name: No information of adults given...*</p>
+                        }
+                        @foreach (var adult in _family.Adults)
+                        {
+                            @if (_family.Adults.IndexOf(adult) == _family.Adults.Count - 1)
+                            {
+                                <em>@adult.FirstName</em>
+                            }
+                            else
+                            {
+                                <em>@adult.FirstName and </em>
+                            }
+                        }
+                    </div>
+                    <ul class="list-group list-group-flush text-muted">
+                        <li class="list-group-item">
+                            @if (_family.Adults.Count > 0)
+                            {
+                                <p>
+                                    Net salary @(Salary(_family.Adults.ToList()))
+                                </p>
+                            }
+                            else
+                            {
+                                <p>Net salary - no information...</p>
+                            }
+                        </li>
+                        <li class="list-group-item">
+                            @if (_family.Children.Count > 0)
+                            {
+                                <p>
+                                    Children: @_family.Children.Count
+                                </p>
+                            }
+                            else
+                            {
+                                <p>
+                                    No children..
+                                </p>
+                            }
+                        </li>
+                        <li class="list-group-item">
+                            @if (_family.Pets.Count > 0)
+                            {
+                                <p>
+                                    Pets: @_family.Pets.Count
+                                </p>
+                            }
+                            else
+                            {
+                                <p>
+                                    No pets..
+                                </p>
+                            }
+                        </li>
+                    </ul>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <button type="button" class="btn btn-outline-primary" @onclick="EditFamily">Edit</button>
+                        </div>
+                        <div class="col-lg-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (_family.Adults.Count > 0)
+        {
+            <div class="col-lg-12 col-lg-12 text-center">
+                <h2>
+                    <span class="badge badge-primary">Adults</span>
+                </h2>
+            </div>
+            @foreach (var adult in _family.Adults)
+            {
+                <div class="col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="bg-white rounded-right">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">First name: @adult.FirstName</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Last name: @adult.LastName</p>
+                                    </div>
+                                </div>
+                                <h3 class="mt-3 ">Information</h3>
+                                <hr class="badge-primary mt-0 w-25">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Hair color: @adult.HairColor</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Eye color: @adult.EyeColor</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="font-weight-bold">Weight: @adult.Weight</p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p class="font-weight-bold">Height: @adult.Height</p>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="font-weight-bold">Sex: @adult.Sex</p>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="font-weight-bold">Age: @adult.Age</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditAdult(_family.Adults.IndexOf(adult)))">Edit</button>
+                            </div>
+                            <div class="col-lg-6"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br/>
+            }
+            @if (_family.Adults.Count < 2)
+            {
+                <button class="btn btn-outline-primary" @onclick="AddAdult" type="button">Add Adult</button>
+            }
+        }
+        else
+        {
+            <div class="col-lg-12 col-lg-12 text-center">
+                <h2>
+                    <span class="text-sm-left">No adults yet.<br/>Firstly add an adult in order to add children or pets.</span>
+                </h2>
+                <button class="btn btn-outline-primary" @onclick="AddAdult" type="button">Add</button>
+            </div>
+        }
+    </div>
+
+
+    <div class="col-lg-4">
+        @if (_family.Children.Count > 0)
+        {
+            <div class="col-lg-12 col-lg-12 text-center">
+                <h2>
+                    <span class="badge badge-primary">Children</span>
+                </h2>
+            </div>
+            @foreach (var child in _family.Children)
+            {
+                <div class="col-lg-12 col-lg-12 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-text">
+                                <em>
+                                    @if (child.Interests.Count > 0)
+                                    {
+                                        @foreach (var interest in child.Interests)
+                                        {
+                                            <p>
+                                                @interest.Description<br/>
+                                            </p>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            No interests. Add one?
+                                            <button class="btn btn-outline-primary" @onclick="@(arg => AddInterestForChild(child.Id))" type="button">Add</button>
+                                        </p>
+                                    }
+                                </em>
+                                <em>
+                                    <p>
+                                        Add pet? <button class="btn btn-outline-primary" @onclick="@(arg => AddPet(child.Id))" type="button">Add</button>
+                                    </p>
+                                </em>
+                            </div>
+                            <div class="bg-white rounded-right">
+                                <h3 class="mt-3 ">Information</h3>
+                                <hr class="badge-primary mt-0 w-25">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">First name: @child.FirstName</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Last name: @child.LastName</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Hair color: @child.HairColor</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Eye color: @child.EyeColor</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="font-weight-bold">Weight: @child.Weight</p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p class="font-weight-bold">Height: @child.Height</p>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="font-weight-bold">Sex: @child.Sex</p>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="font-weight-bold">Age: @child.Age</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditChild(_family.Children.IndexOf(child)))">Edit</button>
+                            </div>
+                            <div class="col-lg-6"></div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+            }
+        }
+        else
+        {
+            if (_family.Adults.Count > 0)
+            {
+                <div class="col-lg-12 col-lg-12 text-center">
+                    <h2>
+                        <span class="badge badge-primary">No children</span>
+                    </h2>
+                    <button class="btn btn-outline-primary" @onclick="AddChild" type="button">Add</button>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="col-lg-4">
+        @if (_family.Pets.Count > 0)
+        {
+            <div class="col-lg-12 col-lg-12 text-center">
+                <h2>
+                    <span class="badge badge-primary">Family's Pets</span>
+                </h2>
+            </div>
+            @foreach (var pet in _family.Pets)
+            {
+                <div class="col-lg-12 col-lg-12 text-center">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="col-lg-12">
+                                <p class="font-weight-bold">Name: @pet.Name</p>
+                            </div>
+                            <div class="bg-white rounded-right">
+                                <h3 class="mt-3 ">Information</h3>
+                                <hr class="badge-primary mt-0 w-25">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Specie: @pet.Species</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="font-weight-bold">Age: @pet.Age</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+            }
+        }
+        else
+        {
+            if (_family.Adults.Count > 0)
+            {
+                <div class="col-lg-12 col-lg-12 text-center">
+                    <h2>
+                        <span class="badge badge-primary">No pets</span>
+                    </h2>
+                </div>
+            }
+        }
+        <button class="btn btn-outline-primary" @onclick="AddPetToFamily" type="button">Add</button>
+
+        @if (_family.Children.Count > 0)
+        {
+            <div class="col-lg-12 col-lg-12 text-center">
+                <h2>
+                    <span class="badge badge-primary">Children's Pets</span>
+                </h2>
+            </div>
+            @foreach (var child in _family.Children)
+            {
+                @if (child.Pets.Count > 0)
+                {
+                    @foreach (var pet in child.Pets)
+                    {
+                        <div class="col-lg-12 col-lg-12 text-center">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="col-lg-12">
+                                        <p class="text-muted">@child.FirstName's pet</p>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <p class="font-weight-bold">Name: @pet.Name</p>
+                                    </div>
+                                    <div class="bg-white rounded-right">
+                                        <h3 class="mt-3 ">Information</h3>
+                                        <hr class="badge-primary mt-0 w-25">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <p class="font-weight-bold">Species: @pet.Species</p>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <p class="font-weight-bold">Age: @pet.Age</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditPet(child.Id, pet.Id))">Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                    }
+                }
+                else
+                {
+                    <div class="col-lg-12">
+                        <p class="text-muted"> No pets for @child.FirstName </p >
+                    </div>
+                }
+            }
+        }
+    </div>
+    </div>
+}
+</section>
+
+@code
+{
+    [Parameter]
+    public int IdFamily { get; set; }
+
+    private Family _family;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        base.OnInitialized();
+        _family = await FamiliesData.GetFamilyAsync(IdFamily);
+    }
+
+    private int Salary(List<Adult> adults)
+    {
+        int sum = 0;
+        foreach (var vAdult in adults)
+        {
+            sum += vAdult.JobTitle.Salary;
+        }
+
+        return sum;
+    }
+
+    private void EditFamily()
+    {
+        NavigationManager.NavigateTo($"/EditFamily/{IdFamily}");
+    }
+
+    private void EditAdult(int adultIndex)
+    {
+        try
+        {
+            int idOfThatAdult = _family.Adults[adultIndex].Id;
+            NavigationManager.NavigateTo($"/EditAdult/{IdFamily}/{idOfThatAdult}");
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
+    private void EditChild(int Index)
+    {
+        NavigationManager.NavigateTo($"/EditChild/{IdFamily}/{Index}");
+    }
+
+
+    private void EditPet(int chilId, int Id)
+    {
+        NavigationManager.NavigateTo($"/EditPet/{IdFamily}/{chilId}/{Id}");
+    }
+
+    private void AddAdult()
+    {
+        NavigationManager.NavigateTo($"/AddAdult/{IdFamily}");
+    }
+
+    private void AddChild()
+    {
+        NavigationManager.NavigateTo($"/AddChild/{IdFamily}");
+    }
+
+
+    private void AddPet(int childId)
+    {
+        NavigationManager.NavigateTo($"/AddPet/{IdFamily}/{childId}");
+    }
+    
+    private void AddPetToFamily()
+    {
+        NavigationManager.NavigateTo($"/AddPetToFamily/{IdFamily}/");
+    }
+
+    private void AddInterestForChild(int childId)
+    {
+        NavigationManager.NavigateTo($"/AddInterest/{IdFamily}/{childId}");
+    }
+    
+    
+}

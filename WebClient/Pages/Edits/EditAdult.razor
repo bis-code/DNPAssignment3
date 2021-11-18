@@ -1,0 +1,86 @@
+﻿@page "/EditAdult/{IdFamily:int}/{indexOfAdult:int}"
+@using Models
+@using WebClient.Data
+@inject NavigationManager NavigationManager
+@inject IFamilyService familyService
+
+@if (adultToEdit == null)
+{
+    <div class="text-center">
+        <h1>There's no adult with this Id...</h1>
+    </div>
+}
+else
+{
+    <EditForm Model="@adultToEdit">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputFirstname">First name</label>
+                <input type="text" class="form-control" id="inputFirstname" @bind-value="adultToEdit.FirstName"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputLastname">Last name</label>
+                <input type="text" class="form-control" id="inputLastname" @bind-value="adultToEdit.LastName"/>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputHairColor">First name</label>
+                <input type="text" class="form-control" id="inputHairColor" @bind-value="adultToEdit.HairColor"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputEyeColor">Last name</label>
+                <input type="text" class="form-control" id="inputEyeColor" @bind-value="adultToEdit.EyeColor"/>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputAge">Age</label>
+                <input type="number" class="form-control col-md-2" @bind-value="adultToEdit.Age"/>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="inputSex">Sex</label>
+                <input type="text" class="form-control" id="inputSex" @bind-value="adultToEdit.Sex"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputJobTitle">JobTitle</label>
+                <input type="text" class="form-control" id="inputJobTitle" @bind-value="adultToEdit.JobTitle.JobTitle"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
+                  <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public int indexOfAdult { get; set; }
+
+    [Parameter]
+    public int IdFamily { get; set; }
+
+    private Adult adultToEdit = new Adult();
+    private Family _family = new Family();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _family = await familyService.GetFamilyAsync(IdFamily);
+        adultToEdit = _family.Adults[indexOfAdult];
+    }
+
+    public void Save()
+    {
+        _family.Adults[indexOfAdult] = adultToEdit;
+        familyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+
+    public void Remove()
+    {
+        _family.Adults.Remove(adultToEdit);
+        familyService.UpdateAsync(_family);
+        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+    }
+}
