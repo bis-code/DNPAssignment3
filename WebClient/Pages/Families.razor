@@ -84,7 +84,7 @@ else
                     </td>
 
                     <td>
-                        <button @onclick="@(() => RemoveFamily(item.Id))">
+                        <button @onclick="@(() => RemoveFamilyById(item.Id))">
 
                             <i class="oi oi-trash" style="color: red"/>
                         </button>
@@ -118,18 +118,13 @@ else
         }
     }
 
-    public void RemoveFamily(int id)
+    public async Task RemoveFamilyById(int id)
     {
-        try
+        Family familyToBeRemoved = await FamilyService.RemoveFamilyAsync(id);
+
+        if (familyToBeRemoved != null)
         {
-            Family adultToRemove = allFamilies.First(f => f.Id == id);
-            FamilyService.RemoveFamilyAsync(id);
-            allFamilies.Remove(adultToRemove);
-            families.Remove(adultToRemove);
-        }
-        catch (Exception e)
-        {
-            errorMessage = e.Message;
+            families.Remove(families.First(f => f.Id == familyToBeRemoved.Id));
         }
     }
     

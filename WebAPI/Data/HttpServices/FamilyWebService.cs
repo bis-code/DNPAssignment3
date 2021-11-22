@@ -7,64 +7,68 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FileData;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Models;
 
 namespace WebClient.Data
 {
     public class FamilyWebService : IFamilyService
     {
-        private readonly FileContext _fileContext;
-        private readonly IList<Family> _families;
-        
-        public FamilyWebService(FileContext fileContext)
+        private readonly DatabaseContext _databaseContext;
+
+        public FamilyWebService(DatabaseContext databaseContext)
         {
-            _fileContext = fileContext;
-            _families = _fileContext.Families;
+            _databaseContext = databaseContext;
         }
-
-
+        
         public async Task<IList<Family>> GetAllFamiliesAsync()
         {
-            IList<Family> tmp = new List<Family>(_families);
-            return tmp;
+            return await _databaseContext.Families.
+                Include(f => f.Adults).
+                Include(f => f.Children)
+                .ThenInclude(c => c.Interests).
+                Include(f => f.Children).
+                ThenInclude(c => c.Pets).
+                Include(f => f.Pets)
+                .ToListAsync();
         }
         
         public async Task<Family> GetFamilyAsync(int id)
         {
-            return _families.FirstOrDefault(t => t.Id == id);
+            return await _databaseContext.Families.
+                Include(f => f.Adults).
+                Include(f => f.Children).
+                ThenInclude(c => c.Interests).
+                Include(f => f.Children).
+                ThenInclude(c => c.Pets).
+                Include(f => f.Pets).
+                FirstOrDefaultAsync(f => f.Id == id);
         }
         
         public async Task<Family> AddFamilyAsync(Family family)
         {
-            int max = _families.Max(f => f.Id);
-            family.Id = (++max);
             family.Photo = "default.png";
-            _fileContext.Families.Add(family);
-            _fileContext.SaveChanges();
+            await _databaseContext.Families.AddAsync(family);
+            Console.WriteLine("From server: " + family.HouseNumber + " photo: " + family.Photo);
+            await _databaseContext.SaveChangesAsync();
             return family;
         }
 
-        public async Task RemoveFamilyAsync(int familyId)
+        public async Task<Family> RemoveFamilyAsync(int familyId)
         {
-            Family toRemove = _families.First(f => f.Id == familyId);
-            _fileContext.Families.Remove(toRemove);
-            _fileContext.SaveChanges();
+            Family toRemove = _databaseContext.Families.First(f => f.Id == familyId);
+            _databaseContext.Families.Remove(toRemove);
+            await _databaseContext.SaveChangesAsync();
+            return toRemove;
         }
 
         public async Task<Family> UpdateAsync(Family family)
         {
-            Family toUpdate = _families.First(f => f.Id == family.Id);
-            toUpdate.Adults = family.Adults;
-            toUpdate.Children = family.Children;
-            toUpdate.Pets = family.Pets;
-            toUpdate.Photo = family.Photo;
-            toUpdate.HouseNumber = family.HouseNumber;
-            toUpdate.StreetName = family.StreetName;
-
-            int index = _fileContext.Families.IndexOf(toUpdate);
-            _fileContext.Families[index] = toUpdate;
-            _fileContext.SaveChanges();
-            return toUpdate;
+            _databaseContext.Update(family);
+            _databaseContext.Entry(family).State = EntityState.Modified;
+            await _databaseContext.SaveChangesAsync();
+            return family;
         }
 
         

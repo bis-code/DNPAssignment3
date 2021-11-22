@@ -1,13 +1,18 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace Models {
-public class Adult : Person {
-    [JsonPropertyName("JobTitle")]
-    public Job JobTitle { get; set; }
-
-    public Adult()
+namespace Models
+{
+    [Table("Adults")]
+    public class Adult : Person
     {
-        JobTitle = new Job();
+        [ForeignKey("Job")]
+        [JsonPropertyName("JobTitle")]
+        public Job JobTitle { get; set; }
+
+        public Adult()
+        {
+            JobTitle = new Job();
+        }
     }
-}
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 
 namespace WebClient.Data
@@ -42,16 +44,27 @@ namespace WebClient.Data
             HttpContent content = new StringContent(familyAsJson,
                 Encoding.UTF8,
                 "application/json");
-            await client.PostAsync(uri + "/Families", content);
+            HttpResponseMessage responseMessage = await client.PostAsync(uri + "/Families", content);
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Client > Succesfully family added.");
+            }
         }
 
-        public async Task RemoveFamilyAsync(int familyId)
+        public async Task<Family> RemoveFamilyAsync(int familyId)
         {
             HttpResponseMessage response = await client.DeleteAsync($"{uri}/Families/{familyId}");
-            if (!response.IsSuccessStatusCode)
+            string reply = await response.Content.ReadAsStringAsync();
+
+            Family removedFamily = JsonSerializer.Deserialize<Family>(reply);
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                throw new Exception($"Error, {response.StatusCode}, {response.ReasonPhrase}");
+                return removedFamily;
             }
+
+            return null;
         }
 
         public async Task UpdateAsync(Family family)

@@ -400,14 +400,8 @@ else
 
     private void EditAdult(int adultIndex)
     {
-        try
-        {
-            int idOfThatAdult = _family.Adults[adultIndex].Id;
-            NavigationManager.NavigateTo($"/EditAdult/{IdFamily}/{idOfThatAdult}");
-        }
-        catch (Exception e)
-        {
-        }
+        int idOfThatAdult = _family.Adults[adultIndex].Id;
+        NavigationManager.NavigateTo($"/EditAdult/{IdFamily}/{idOfThatAdult}");
     }
 
     private void EditChild(int Index)
@@ -436,7 +430,7 @@ else
     {
         NavigationManager.NavigateTo($"/AddPet/{IdFamily}/{childId}");
     }
-    
+
     private void AddPetToFamily()
     {
         NavigationManager.NavigateTo($"/AddPetToFamily/{IdFamily}/");
@@ -446,6 +440,6 @@ else
     {
         NavigationManager.NavigateTo($"/AddInterest/{IdFamily}/{childId}");
     }
-    
-    
+
+
 }

@@ -12,7 +12,7 @@ namespace WebClient.Data
 
         Task<Family> AddFamilyAsync(Family family);
 
-        Task RemoveFamilyAsync(int id);
+        Task<Family> RemoveFamilyAsync(int id);
 
         Task<Family> UpdateAsync(Family family);
         

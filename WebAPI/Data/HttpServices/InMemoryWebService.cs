@@ -6,6 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FileData;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using WebClient.Data;
 using Models;
 
@@ -13,34 +16,16 @@ namespace WebClient.Authentication
 {
     public class InMemoryWebService : IUserService
     {
-        private IList<User> users;
+        private readonly DatabaseContext _databaseContext;
 
-        public InMemoryWebService()
+        public InMemoryWebService(DatabaseContext databaseContext)
         {
-            users = new[]
-            {
-                new User()
-                {
-                    Username = "Ionut",
-                    Id = 2,
-                    Password = "12345",
-                    SecurityLevel = 4,
-                    Role = "Admin",
-                },
-                new User()
-                {
-                    Username = "Baicoianu",
-                    Id = 3,
-                    Password = "12345",
-                    SecurityLevel = 2,
-                    Role = "Member",
-                }
-            }.ToList();
+            _databaseContext = databaseContext;
         }
 
         public async Task<User> ValidateUserAsync(string username, string password)
         {
-            User first = users.FirstOrDefault(user => user.Username.Equals(username));
+            User first = _databaseContext.Users.FirstOrDefault(user => user.Username.Equals(username));
             if (first == null)
             {
                 throw new Exception("User not found");

@@ -31,7 +31,7 @@ namespace WebAPI
         {
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebAPI", Version = "v1"}); });
-            services.AddSingleton<FileContext>();
+            services.AddSingleton<DatabaseContext>();
             services.AddScoped<IFamilyService, FamilyWebService>();
             services.AddScoped<IUserService, InMemoryWebService>();
         }

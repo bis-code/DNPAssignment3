@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Logging;
 using Models;
 using WebClient.Data;
@@ -67,7 +68,6 @@ namespace WebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     return StatusCode(500, e.Message);
                 }
             }
@@ -83,24 +83,22 @@ namespace WebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     return StatusCode(500, e.Message);
                 }
             }
 
             [HttpDelete]
             [Route("{id:int}")]
-            public async Task<ActionResult> DeleteTodo([FromRoute] int id)
+            public async Task<ActionResult<Family>> DeleteFamily([FromRoute] int id)
             {
                 try
                 {
-                    await familyService.RemoveFamilyAsync(id);
-                    Console.WriteLine("xd");
-                    return Ok();
+                Console.WriteLine("WORKS");
+                    Family deletedFamily = await familyService.RemoveFamilyAsync(id);
+                    return Ok(deletedFamily);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                     return StatusCode(500, e.Message);
                 }
             }
