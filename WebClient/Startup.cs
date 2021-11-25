@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using WebClient.Authentication;
-using WebClient.Authentication.Impl;
 using WebClient.Data;
+using WebClient.Data.HttpServices;
 
 namespace WebClient
 {
@@ -32,7 +26,7 @@ namespace WebClient
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<IFamilyService, FamilyWebService>();
-            services.AddScoped<IUserService, CloudMemoryUserService>();
+            services.AddScoped<IUserService, InMemoryWebService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
         }

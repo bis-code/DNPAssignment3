@@ -17,7 +17,7 @@ namespace Models
         [Required, MaxLength(128)]
         [JsonPropertyName("password")]
         public string Password { get; set; }
-        [Required, MaxLength(128)]
+        [MaxLength(128)]
         [JsonPropertyName("photo")]
         public string Photo { get; set; }
         [MaxLength(128)]

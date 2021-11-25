@@ -12,6 +12,12 @@
         <h1>This family does not exist.</h1>
     </div>
 }
+else if (_child == null)
+{
+    <div class="text-center">
+        <h1>This child does not exist.</h1>
+    </div> 
+}
 else
 {
     <div class="align-content-lg-center">
@@ -48,26 +54,24 @@ else
 
     private Pet _newPet = new Pet();
     private Family _family = new Family();
+    private Child _child = new Child();
 
     protected override async Task OnParametersSetAsync()
     {
         _family = await FamilyService.GetFamilyAsync(IdFamily);
-
+        _child = _family.Children.FirstOrDefault(c => c.Id == IdChild);
     }
 
     public void AddPetForChild()
     {
-        Child child = _family.Children.First(c => c.Id == IdChild);
-        int indexOfChild = _family.Children.IndexOf(child);
-        int max = 0;
-        if (_family.Children[indexOfChild].Pets.Count > 0)
+        for (int i = 0; i < _family.Children.Count; i++)
         {
-            max = _family.Children[indexOfChild].Pets.Max(p => p.Id);
+            var child = _family.Children[i];
+            if (child.Id == _child.Id)
+            {
+                child.Pets.Add(_newPet);
+            }
         }
-        _newPet.Id = (++max);
-        _family.Children[indexOfChild].Pets.Add(_newPet);
-        
-        //updating
         FamilyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }

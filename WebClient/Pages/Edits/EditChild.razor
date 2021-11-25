@@ -1,10 +1,10 @@
-﻿@page "/EditChild/{IdFamily:int}/{Index:int}"
+﻿@page "/EditChild/{IdFamily:int}/{IdChild:int}"
 @using Models
 @using Microsoft.AspNetCore.Components
 @using WebClient.Data
 @inject IFamilyService familyService
 @inject NavigationManager NavigationManager
-<h3>EditChild, @Index</h3>
+<h3>EditChild, Id @IdChild</h3>
 <EditForm Model="@childToEdit">
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -54,7 +54,7 @@
     public int IdFamily { get; set; }
 
     [Parameter]
-    public int Index { get; set; }
+    public int IdChild { get; set; }
 
     private Child childToEdit = new Child();
     private Family _family = new Family();
@@ -62,19 +62,38 @@
     protected override async Task OnParametersSetAsync()
     {
         _family = await familyService.GetFamilyAsync(IdFamily);
-        childToEdit = _family.Children[Index];
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            if (_family.Children[i].Id == IdChild)
+            {
+                childToEdit = _family.Children[i];
+            }
+        }
     }
 
     public void Save()
     {
-        _family.Children[Index] = childToEdit;
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            if (_family.Children[i].Id == childToEdit.Id)
+            {
+                _family.Children.Remove(_family.Children[i]);
+                _family.Children.Add(childToEdit);
+            }
+        }
         familyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }
 
     public void Remove()
     {
-        _family.Children.Remove(childToEdit);
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            if (_family.Children[i].Id == childToEdit.Id)
+            {
+                _family.Children.Remove(_family.Children[i]);
+            }
+        }
         familyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }

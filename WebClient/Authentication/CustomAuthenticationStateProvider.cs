@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WebClient.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using Models;
+using WebClient.Data;
 
-namespace WebClient.Authentication.Impl
+namespace WebClient.Authentication
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
@@ -51,7 +51,7 @@ namespace WebClient.Authentication.Impl
             ClaimsIdentity identity = new ClaimsIdentity();
             try
             {
-                User user = await userService.ValidateUser(username, password);
+                User user = await userService.ValidateUserAsync(username, password);
                 identity = SetupClaimsForUser(user);
                 string serialisedData = JsonSerializer.Serialize(user);
                 jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);

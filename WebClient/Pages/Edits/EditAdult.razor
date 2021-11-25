@@ -48,7 +48,7 @@ else
             </div>
         </div>
         <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
-                  <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+        <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
 
     </EditForm>
 }
@@ -67,20 +67,40 @@ else
     protected override async Task OnParametersSetAsync()
     {
         _family = await familyService.GetFamilyAsync(IdFamily);
-        adultToEdit = _family.Adults[indexOfAdult];
+        for (int i = 0; i < _family.Adults.Count; i++)
+        {
+            if (_family.Adults[i].Id == indexOfAdult)
+            {
+                adultToEdit = _family.Adults[i];
+            }
+        }
     }
 
     public void Save()
     {
-        _family.Adults[indexOfAdult] = adultToEdit;
+        for (int i = 0; i < _family.Adults.Count; i++)
+        {
+            if (_family.Adults[i].Id == adultToEdit.Id)
+            {
+                _family.Adults.Remove(_family.Adults[i]);
+                _family.Adults.Add(adultToEdit);
+            }
+        }
         familyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }
 
     public void Remove()
     {
-        _family.Adults.Remove(adultToEdit);
+        for (int i = 0; i < _family.Adults.Count; i++)
+        {
+            if (_family.Adults[i].Id == adultToEdit.Id)
+            {
+                _family.Adults.Remove(_family.Adults[i]);
+            }
+        }
         familyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }
+
 }

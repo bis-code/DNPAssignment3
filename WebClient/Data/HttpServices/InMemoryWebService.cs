@@ -4,26 +4,25 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebClient.Data;
 using Models;
 
-namespace WebClient.Authentication
+namespace WebClient.Data.HttpServices
 {
     public class InMemoryWebService : IUserService
     {
-        private IList<User> users;
-        private string usersFile = "users.json";
-
+        private readonly HttpClient client;
         public InMemoryWebService()
         {
-            
+            client = new HttpClient();
         }
 
-        public async Task<User> ValidateUser(string username, string password)
+        public async Task<User> ValidateUserAsync(string username, string password)
         {
-            HttpClient client = new HttpClient();
+            
             HttpResponseMessage response = await client.GetAsync($"https://localhost:5001/users?username={username}&password={password}");
             if (response.StatusCode == HttpStatusCode.OK)
             {

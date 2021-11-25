@@ -50,21 +50,11 @@ else
     protected override async Task OnParametersSetAsync()
     {
         _family = await FamilyService.GetFamilyAsync(IdFamily);
-
     }
 
     public void AddPetForFamily()
     {
-
-        int max = 0;
-        if (_family.Pets.Count > 0)
-        {
-            max = _family.Pets.Max(p => p.Id);
-        }
-        _newPet.Id = (++max);
         _family.Pets.Add(_newPet);
-        
-        //updating
         FamilyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }

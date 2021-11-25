@@ -138,7 +138,7 @@ else
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
-                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditAdult(_family.Adults.IndexOf(adult)))">Edit</button>
+                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditAdult(adult.Id))">Edit</button>
                             </div>
                             <div class="col-lg-6"></div>
                         </div>
@@ -240,7 +240,7 @@ else
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
-                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditChild(_family.Children.IndexOf(child)))">Edit</button>
+                                <button type="button" class="disabled btn btn-outline-primary" @onclick="@(() => EditChild(child.Id))">Edit</button>
                             </div>
                             <div class="col-lg-6"></div>
                         </div>
@@ -398,9 +398,8 @@ else
         NavigationManager.NavigateTo($"/EditFamily/{IdFamily}");
     }
 
-    private void EditAdult(int adultIndex)
+    private void EditAdult(int idOfThatAdult)
     {
-        int idOfThatAdult = _family.Adults[adultIndex].Id;
         NavigationManager.NavigateTo($"/EditAdult/{IdFamily}/{idOfThatAdult}");
     }
 

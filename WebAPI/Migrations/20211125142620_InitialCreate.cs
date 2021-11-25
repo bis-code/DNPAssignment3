@@ -12,7 +12,7 @@ namespace WebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     StreetName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     HouseNumber = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -43,7 +43,7 @@ namespace WebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Username = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Password = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
-                    Photo = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Photo = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
                     SecurityLevel = table.Column<int>(type: "INTEGER", nullable: false),
@@ -69,7 +69,7 @@ namespace WebAPI.Migrations
                     Weight = table.Column<float>(type: "REAL", nullable: false),
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     Sex = table.Column<string>(type: "TEXT", maxLength: 1, nullable: false),
-                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false)
+                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,7 +88,7 @@ namespace WebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Job = table.Column<int>(type: "INTEGER", nullable: true),
+                    JobTitleIdJob = table.Column<int>(type: "INTEGER", nullable: true),
                     FamilyId = table.Column<int>(type: "INTEGER", nullable: true),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
@@ -98,7 +98,7 @@ namespace WebAPI.Migrations
                     Weight = table.Column<float>(type: "REAL", nullable: false),
                     Height = table.Column<int>(type: "INTEGER", nullable: false),
                     Sex = table.Column<string>(type: "TEXT", maxLength: 1, nullable: false),
-                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false)
+                    Photo = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,8 +110,8 @@ namespace WebAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Adults_Jobs_Job",
-                        column: x => x.Job,
+                        name: "FK_Adults_Jobs_JobTitleIdJob",
+                        column: x => x.JobTitleIdJob,
                         principalTable: "Jobs",
                         principalColumn: "IdJob",
                         onDelete: ReferentialAction.Restrict);
@@ -173,9 +173,9 @@ namespace WebAPI.Migrations
                 column: "FamilyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Adults_Job",
+                name: "IX_Adults_JobTitleIdJob",
                 table: "Adults",
-                column: "Job");
+                column: "JobTitleIdJob");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Children_FamilyId",

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211121184731_InitialCreate")]
+    [Migration("20211125142620_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace WebAPI.Migrations
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Job")
+                    b.Property<int?>("JobTitleIdJob")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
@@ -57,7 +57,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -73,7 +72,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("FamilyId");
 
-                    b.HasIndex("Job");
+                    b.HasIndex("JobTitleIdJob");
 
                     b.ToTable("Adults");
                 });
@@ -114,7 +113,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -143,7 +141,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -254,7 +251,6 @@ namespace WebAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
@@ -284,7 +280,7 @@ namespace WebAPI.Migrations
 
                     b.HasOne("Models.Job", "JobTitle")
                         .WithMany()
-                        .HasForeignKey("Job");
+                        .HasForeignKey("JobTitleIdJob");
 
                     b.Navigation("JobTitle");
                 });

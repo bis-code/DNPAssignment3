@@ -7,29 +7,28 @@ using WebClient.Authentication;
 namespace WebAPI.Controllers
 {
     [ApiController]
-        [Route("[controller]")]
-        public class UsersController : ControllerBase
+    [Route("[controller]")]
+    public class UsersController : ControllerBase
+    {
+        private readonly IUserService userService;
+
+        public UsersController(IUserService userService)
         {
+            this.userService = userService;
+        }
 
-            private readonly IUserService userService;
-
-            public UsersController(IUserService userService)
+        [HttpGet]
+        public async Task<ActionResult<User>> ValidateUser([FromQuery] string username, [FromQuery] string password)
+        {
+            try
             {
-                this.userService = userService;
+                var user = await userService.ValidateUserAsync(username, password);
+                return Ok(user);
             }
-
-            [HttpGet]
-            public async Task<ActionResult<User>> ValidateUser([FromQuery] string username, [FromQuery] string password)
+            catch (Exception e)
             {
-                try
-                {
-                    var user = await userService.ValidateUserAsync(username, password);
-                    return Ok(user);
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message);
-                }
+                return BadRequest(e.Message);
             }
         }
+    }
 }
