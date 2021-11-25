@@ -40,6 +40,7 @@ namespace WebClient.Data
         
         public async Task AddFamilyAsync(Family family)
         {
+            family.Photo = "default.png";
             string familyAsJson = JsonSerializer.Serialize(family);
             HttpContent content = new StringContent(familyAsJson,
                 Encoding.UTF8,

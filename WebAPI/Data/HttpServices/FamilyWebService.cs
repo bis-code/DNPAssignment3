@@ -17,9 +17,9 @@ namespace WebClient.Data
     {
         private readonly DatabaseContext _databaseContext;
 
-        public FamilyWebService(DatabaseContext databaseContext)
+        public FamilyWebService()
         {
-            _databaseContext = databaseContext;
+            _databaseContext = new DatabaseContext();
         }
         
         public async Task<IList<Family>> GetAllFamiliesAsync()
@@ -48,7 +48,6 @@ namespace WebClient.Data
         
         public async Task<Family> AddFamilyAsync(Family family)
         {
-            family.Photo = "default.png";
             await _databaseContext.Families.AddAsync(family);
             Console.WriteLine("From server: " + family.HouseNumber + " photo: " + family.Photo);
             await _databaseContext.SaveChangesAsync();
@@ -65,9 +64,7 @@ namespace WebClient.Data
 
         public async Task<Family> UpdateAsync(Family family)
         {
-            _databaseContext.Update(family);
-            _databaseContext.Entry(family).State = EntityState.Modified;
-            await _databaseContext.SaveChangesAsync();
+            
             return family;
         }
 

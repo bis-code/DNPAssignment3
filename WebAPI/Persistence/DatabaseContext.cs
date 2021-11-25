@@ -7,9 +7,11 @@ namespace FileData
 {
     public class DatabaseContext : DbContext
     {
-        
         public DbSet<User> Users { get; set; }
         public DbSet<Family> Families { get; set; }
+        public DbSet<Adult> Adults { get; set; }
+        public DbSet<Child> Children { get; set; }
+        public DbSet<Interest> Interests { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
