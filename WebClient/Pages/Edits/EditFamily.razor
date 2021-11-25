@@ -33,10 +33,12 @@ else
     public int Id { get; set; }
 
     private Family familyToEdit;
+    private IList<Family> _families;
 
     protected override async Task OnParametersSetAsync()
     {
         familyToEdit = await familyService.GetFamilyAsync(Id);
+        _families = await familyService.GetAllFamiliesAsync();
     }
 
     public void Save()

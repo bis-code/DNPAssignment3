@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:sqlite:C:\Users\baico\RiderProjects\DNPAssignment3\WebAPI\Family.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Family.db" uuid="18f96c12-2d58-4cf6-9901-493d29647015">
+    <data-source source="LOCAL" name="Family.db" uuid="aab15be4-ceac-4932-805d-4bbfe214e764">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

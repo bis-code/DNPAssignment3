@@ -1,4 +1,4 @@
-﻿@page "/EditPet/{IdFamily:int}/{Index:int}/{Id:int}"
+﻿@page "/EditPet/{IdFamily:int}/{IdChild:int}/{IdPet:int}"
 @using WebClient.Data
 @using Microsoft.AspNetCore.Components
 @using Models
@@ -51,10 +51,10 @@ else
     public int IdFamily { get; set; }
     
     [Parameter]
-    public int Index { get; set; }
+    public int IdChild { get; set; }
     
     [Parameter]
-    public int Id { get; set; }
+    public int IdPet { get; set; }
 
     private Pet _petToEdit = new Pet();
     private Family _family = new Family();
@@ -62,20 +62,57 @@ else
     protected override async Task OnParametersSetAsync()
     {
         _family = await FamilyService.GetFamilyAsync(IdFamily);
-        _petToEdit = _family.Children.First(c => c.Id == Index).Pets.First(p => p.Id == Id);
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            if (_family.Children[i].Id == IdChild)
+            {
+                var child = _family.Children[i];
+                for (int j = 0; i < child.Pets.Count; j++)
+                {
+                    if (child.Pets[j].Id == IdPet)
+                    {
+                        _petToEdit = child.Pets[j];
+                    }
+                }
+            }
+        }
     }
 
     public void Save()
     {
-        int indexOfPet = _family.Children.First(c => c.Id == Index).Pets.IndexOf(_petToEdit);
-        _family.Children.First(c => c.Id == Index).Pets[indexOfPet] = _petToEdit;
-        FamilyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            if (_family.Children[i].Id == IdChild)
+            {
+                var child = _family.Children[i];
+                for (int j = 0; i < child.Pets.Count; j++)
+                {
+                    if (child.Pets[j].Id == _petToEdit.Id)
+                    {
+                        _family.Children[i].Pets.Remove(child.Pets[i]);
+                        _family.Children[i].Pets.Add(_petToEdit);
+                    }
+                }
+            }
+            FamilyService.UpdateAsync(_family);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        }
     }
-    
+
     public void Remove()
     {
-        _family.Children.First(c => c.Id == Index).Pets.Remove(_petToEdit);
+        for (int i = 0; i < _family.Children.Count; i++)
+        {
+            var child = _family.Children[i];
+            for (int j = 0; i < child.Pets.Count; j++)
+            {
+                if (child.Pets[j].Id == _petToEdit.Id)
+                {
+                    _family.Children[i].Pets.Remove(child.Pets[j]);
+                }
+            }
+        }
         FamilyService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
     }

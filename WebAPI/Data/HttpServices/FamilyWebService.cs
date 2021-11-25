@@ -7,7 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FileData;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Models;
 
@@ -21,36 +23,36 @@ namespace WebClient.Data
         {
             _databaseContext = new DatabaseContext();
         }
-        
+
         public async Task<IList<Family>> GetAllFamiliesAsync()
         {
+            Console.WriteLine("Get families");
             return await _databaseContext.Families.
                 Include(f => f.Adults).
                 Include(f => f.Children)
                 .ThenInclude(c => c.Interests).
                 Include(f => f.Children).
-                ThenInclude(c => c.Pets).
-                Include(f => f.Pets)
+                ThenInclude(c => c.Pets).Include(f => f.Pets)
                 .ToListAsync();
         }
-        
+
         public async Task<Family> GetFamilyAsync(int id)
         {
-            return await _databaseContext.Families.
-                Include(f => f.Adults).
-                Include(f => f.Children).
-                ThenInclude(c => c.Interests).
-                Include(f => f.Children).
-                ThenInclude(c => c.Pets).
-                Include(f => f.Pets).
-                FirstOrDefaultAsync(f => f.Id == id);
+            Console.WriteLine("Get family");
+            return _databaseContext.Families.Where(f => f.Id == id).Include(f => f.Adults).ThenInclude(a => a.JobTitle).First();
+            // Include(f => f.Children)
+            // .ThenInclude(c => c.Interests).
+            // Include(f => f.Children).ThenInclude(c => c.Pets).
+            // Include(f => f.Pets)
+            // .FirstOrDefaultAsync(f => f.Id == id);
         }
-        
+
         public async Task<Family> AddFamilyAsync(Family family)
         {
             await _databaseContext.Families.AddAsync(family);
             Console.WriteLine("From server: " + family.HouseNumber + " photo: " + family.Photo);
             await _databaseContext.SaveChangesAsync();
+            Console.WriteLine("Add");
             return family;
         }
 
@@ -59,17 +61,49 @@ namespace WebClient.Data
             Family toRemove = _databaseContext.Families.First(f => f.Id == familyId);
             _databaseContext.Families.Remove(toRemove);
             await _databaseContext.SaveChangesAsync();
+            Console.WriteLine("Remove");
             return toRemove;
         }
 
         public async Task<Family> UpdateAsync(Family family)
         {
-            
+            List<Adult> adults = new List<Adult>();
+
+            // var familyStored = await _databaseContext.Families.Include(f => f.Adults).
+            //     ThenInclude(a => a.JobTitle).Include(f => f.Children)
+            //     .ThenInclude(c => c.Interests).
+            //     Include(f => f.Children).ThenInclude(c => c.Pets).
+            //     Include(f => f.Pets)
+            //     .FirstOrDefaultAsync(f => f.Id == family.Id);
+            //     Include(f => f.Adults).Include(f => f.Children).ThenInclude()
+
+            _databaseContext.Families.Update(family);
+            // await _databaseContext.SaveChangesAsync();
+            //
+            // List<Child> children = new List<Child>();
+            // List<Interest> interests = new List<Interest>();
+            //
+            // foreach (var child in family.Children)
+            // {
+            //     children.Add(child);
+            //     if (child.Interests.Count > 0)
+            //     {
+            //         foreach (var interest in child.Interests)
+            //         {
+            //             interests.Add(interest);
+            //         }
+            //         _databaseContext.Interests.UpdateRange(interests);
+            //         await _databaseContext.SaveChangesAsync();
+            //     }
+            //     _databaseContext.Children.UpdateRange(children);
+            //     await _databaseContext.SaveChangesAsync();
+            // }
+            await _databaseContext.SaveChangesAsync();
+            Console.WriteLine("Update");
             return family;
         }
 
-        
-        
+
         // public async Task<IList<Family>> GetFamiliesAsync()
         // {
         //     HttpResponseMessage response = await client.GetAsync(uri + "/families");

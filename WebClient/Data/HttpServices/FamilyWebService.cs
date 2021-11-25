@@ -49,7 +49,7 @@ namespace WebClient.Data
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                Console.WriteLine("Client > Succesfully family added.");
+                Console.WriteLine("Client > Successfully family added.");
             }
         }
 
@@ -70,11 +70,15 @@ namespace WebClient.Data
 
         public async Task UpdateAsync(Family family)
         {
-            string adultAsJson = JsonSerializer.Serialize(family);
-            HttpContent content = new StringContent(adultAsJson,
+            string familyAsJson = JsonSerializer.Serialize(family);
+            HttpContent content = new StringContent(familyAsJson,
                 Encoding.UTF8,
                 "application/json");
-            await client.PatchAsync($"{uri}/Families/{family.Id}", content);
+            var response = await client.PatchAsync($"{uri}/Families/{family.Id}", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(response.ReasonPhrase);
+            }
         }
 
         

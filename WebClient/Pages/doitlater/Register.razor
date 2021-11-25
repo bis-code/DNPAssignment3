@@ -1,18 +1,18 @@
 ﻿@* @page "/Register" *@
 @* @using Models *@
-@* @using FirstAssignmentDNP.Data *@
 @* @using Microsoft.AspNetCore.Components *@
+@* @using WebClient.Authentication *@
 @* *@
 @* @inject NavigationManager NavigationManager *@
-@* @inject IUsersData UsersData *@
+@* @inject IUserService userService *@
 @* *@
 @* *@
 @* <div class="wrapper"></div> *@
 @* <div class="container"> *@
 @*     <div class="row no-gutters"> *@
 @*         <div class="form-box "> *@
-@*             <h1 class="font-weight-bold py-3">Login</h1> *@
-@*             <h4>Sign into your account</h4> *@
+@*             <h1 class="font-weight-bold py-3">Register</h1> *@
+@*             <h4>Register your account</h4> *@
 @*             <form class="input-group"> *@
 @*                 <input type="text" placeholder="user name" @bind-value="newUserItem.Username" class="input-field"/> *@
 @*                 <input type="password" placeholder="password" @bind-value="newUserItem.Password" class="input-field"/> *@
@@ -20,7 +20,7 @@
 @*                 <input type="text" placeholder="last name" @bind-value="newUserItem.LastName" class="input-field"/> *@
 @*                 <button type="button" class="submit-btn" @onclick="AddNewUser">Login</button> *@
 @*                 <div style="color:red"> @errorMessage</div> *@
-@*                 <p>You arlready have an account? <a href="/login">Login here</a></p> *@
+@*                 <p>You already have an account? <a href="/login">Login here</a></p> *@
 @*             </form> *@
 @*         </div> *@
 @*     </div> *@
@@ -33,7 +33,7 @@
 @* *@
 @*     private void AddNewUser() *@
 @*     { *@
-@*         UsersData.AddUserAsync(newUserItem); *@
+@*         userService.ValidateRegisterAsync(newUserItem); *@
 @*         NavigationManager.NavigateTo("/"); *@
 @*     } *@
 @* *@

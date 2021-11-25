@@ -74,8 +74,9 @@ namespace WebAPI.Controllers
 
             [HttpPatch]
             [Route("{id:int}")]
-            public async Task<ActionResult<Family>> UpdateFamily([FromBody] Family family)
+            public async Task<ActionResult<Family>> UpdateFamily([FromBody] Family family, [FromRoute] int id)
             {
+                Console.WriteLine(id);
                 try
                 {
                     Family updatedFamily = await familyService.UpdateAsync(family);
@@ -93,7 +94,6 @@ namespace WebAPI.Controllers
             {
                 try
                 {
-                Console.WriteLine("WORKS");
                     Family deletedFamily = await familyService.RemoveFamilyAsync(id);
                     return Ok(deletedFamily);
                 }

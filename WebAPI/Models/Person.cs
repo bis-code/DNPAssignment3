@@ -36,7 +36,7 @@ public class Person {
     [Required, MaxLength(1, ErrorMessage = "'M' or 'F' required")]
     public string Sex { get; set; }
     [JsonPropertyName("Photo")]
-    [Required, MaxLength(256)]
+    [MaxLength(256)]
     public string Photo { get; set; }
 }
 

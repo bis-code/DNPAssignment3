@@ -6,7 +6,6 @@ namespace Models
     [Table("Adults")]
     public class Adult : Person
     {
-        [ForeignKey("Job")]
         [JsonPropertyName("JobTitle")]
         public Job JobTitle { get; set; }
 

@@ -90,7 +90,6 @@ else
 
     public void AddAdultToFamily()
     {
-
         _family.Adults.Add(_newAdult);
         FamiliesService.UpdateAsync(_family);
         NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");

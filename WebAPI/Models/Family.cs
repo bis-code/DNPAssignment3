@@ -9,7 +9,7 @@ namespace Models {
         [Key]
         [JsonPropertyName("Id")]
         public int Id { get; set; }
-        [Required, MaxLength(256)]
+        [MaxLength(256)]
         [JsonPropertyName("Photo")]
         public string Photo  { get; set; }
         [Required, MaxLength(256)]
