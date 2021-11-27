@@ -39,12 +39,12 @@ namespace WebClient.Data
         public async Task<Family> GetFamilyAsync(int id)
         {
             Console.WriteLine("Get family");
-            return _databaseContext.Families.Where(f => f.Id == id).Include(f => f.Adults).ThenInclude(a => a.JobTitle).First();
-            // Include(f => f.Children)
-            // .ThenInclude(c => c.Interests).
-            // Include(f => f.Children).ThenInclude(c => c.Pets).
-            // Include(f => f.Pets)
-            // .FirstOrDefaultAsync(f => f.Id == id);
+            return await _databaseContext.Families.Include(f => f.Adults).
+            Include(f => f.Children)
+            .ThenInclude(c => c.Interests).
+            Include(f => f.Children).ThenInclude(c => c.Pets).
+            Include(f => f.Pets)
+            .FirstOrDefaultAsync(f => f.Id == id);
         }
 
         public async Task<Family> AddFamilyAsync(Family family)
@@ -65,7 +65,7 @@ namespace WebClient.Data
             return toRemove;
         }
 
-        public async Task<Family> UpdateAsync(Family family)
+        public async Task UpdateAsync(Family family)
         {
             List<Adult> adults = new List<Adult>();
 
@@ -98,9 +98,9 @@ namespace WebClient.Data
             //     _databaseContext.Children.UpdateRange(children);
             //     await _databaseContext.SaveChangesAsync();
             // }
+            _databaseContext.Entry(family).State = EntityState.Modified;
             await _databaseContext.SaveChangesAsync();
             Console.WriteLine("Update");
-            return family;
         }
 
 

@@ -74,7 +74,7 @@ namespace WebClient.Data
             HttpContent content = new StringContent(familyAsJson,
                 Encoding.UTF8,
                 "application/json");
-            var response = await client.PatchAsync($"{uri}/Families/{family.Id}", content);
+            var response = await client.PutAsync($"{uri}/Families/{family.Id}", content);
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.ReasonPhrase);

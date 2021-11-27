@@ -72,15 +72,14 @@ namespace WebAPI.Controllers
                 }
             }
 
-            [HttpPatch]
+            [HttpPut]
             [Route("{id:int}")]
-            public async Task<ActionResult<Family>> UpdateFamily([FromBody] Family family, [FromRoute] int id)
+            public async Task<ActionResult<Family>> UpdateFamily([FromBody] Family family)
             {
-                Console.WriteLine(id);
                 try
                 {
-                    Family updatedFamily = await familyService.UpdateAsync(family);
-                    return Ok(updatedFamily);
+                    await familyService.UpdateAsync(family);
+                    return Ok(family);
                 }
                 catch (Exception e)
                 {

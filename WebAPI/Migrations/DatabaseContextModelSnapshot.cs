@@ -46,8 +46,10 @@ namespace WebAPI.Migrations
                     b.Property<int>("Height")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("JobTitleIdJob")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -57,6 +59,9 @@ namespace WebAPI.Migrations
                     b.Property<string>("Photo")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Salary")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Sex")
                         .IsRequired()
@@ -69,8 +74,6 @@ namespace WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FamilyId");
-
-                    b.HasIndex("JobTitleIdJob");
 
                     b.ToTable("Adults");
                 });
@@ -176,25 +179,6 @@ namespace WebAPI.Migrations
                     b.ToTable("Interests");
                 });
 
-            modelBuilder.Entity("Models.Job", b =>
-                {
-                    b.Property<int>("IdJob")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Salary")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("IdJob");
-
-                    b.ToTable("Jobs");
-                });
-
             modelBuilder.Entity("Models.Pet", b =>
                 {
                     b.Property<int>("Id")
@@ -275,12 +259,6 @@ namespace WebAPI.Migrations
                     b.HasOne("Models.Family", null)
                         .WithMany("Adults")
                         .HasForeignKey("FamilyId");
-
-                    b.HasOne("Models.Job", "JobTitle")
-                        .WithMany()
-                        .HasForeignKey("JobTitleIdJob");
-
-                    b.Navigation("JobTitle");
                 });
 
             modelBuilder.Entity("Models.Child", b =>
