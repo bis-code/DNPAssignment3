@@ -3,6 +3,7 @@
 @using WebClient.Data
 @inject NavigationManager NavigationManager
 @inject IFamilyService familyService
+@inject IAdultServices AdultServices
 
 @if (adultToEdit == null)
 {
@@ -47,6 +48,7 @@ else
                 <input type="text" class="form-control" id="inputJobTitle" @bind-value="adultToEdit.JobTitle"/>
             </div>
         </div>
+        <div style="color:red">@errorMessage</div>
         <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
         <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
 
@@ -54,6 +56,8 @@ else
 }
 
 @code {
+
+    private string errorMessage;
 
     [Parameter]
     public int indexOfAdult { get; set; }
@@ -66,41 +70,47 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        _family = await familyService.GetFamilyAsync(IdFamily);
-        for (int i = 0; i < _family.Adults.Count; i++)
+        errorMessage = "";
+        try
         {
-            if (_family.Adults[i].Id == indexOfAdult)
-            {
-                adultToEdit = _family.Adults[i];
-            }
+            _family = await familyService.GetFamilyAsync(IdFamily);
+            adultToEdit = await AdultServices.GetAdultAsync(indexOfAdult);
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
         }
     }
 
     public void Save()
     {
-        for (int i = 0; i < _family.Adults.Count; i++)
+        errorMessage = "";
+        try
         {
-            if (_family.Adults[i].Id == adultToEdit.Id)
-            {
-                _family.Adults.Remove(_family.Adults[i]);
-                _family.Adults.Add(adultToEdit);
-            }
+            AdultServices.UpdateAdultAsync(adultToEdit);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        familyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
     public void Remove()
     {
-        for (int i = 0; i < _family.Adults.Count; i++)
+        errorMessage = "";
+        try
         {
-            if (_family.Adults[i].Id == adultToEdit.Id)
-            {
-                _family.Adults.Remove(_family.Adults[i]);
-            }
+            AdultServices.UpdateAdultAsync(adultToEdit);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        familyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

@@ -1,39 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.Extensions.Logging;
+using Microsoft.Win32.SafeHandles;
 using Models;
+using WebAPI.Data;
 using WebClient.Data;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FamiliesController : ControllerBase
+    public class AdultsController : ControllerBase
     {
-        private IFamilyService familyService;
-
-            public FamiliesController(IFamilyService familyService)
-            {
-                this.familyService = familyService;
-            }
-
-            [HttpGet]
-            public async Task<ActionResult<IList<Family>>> GetFamilies([FromQuery] int? id)
+        private IAdultServices _adultServices;
+        
+        public AdultsController(IAdultServices adultServices)
+        {
+            _adultServices = adultServices;
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult<IList<Adult>>> GetAdults([FromQuery] int familyId)
             {
                 try
                 {
-                    IList<Family> families = await familyService.GetAllFamiliesAsync();
-
-                    if (id != null) //filter by id
-                    {
-                        families = families.Where(adult => adult.Id == id).ToList();
-                    }
-
-                    return Ok(families);
+                    IList<Adult> adults = await _adultServices.GetAllAdultsAsync(familyId);
+                    return Ok(adults);
                 }
                 catch (Exception e)
                 {
@@ -44,12 +38,12 @@ namespace WebAPI.Controllers
 
             [HttpGet]
             [Route("{id:int}")]
-            public async Task<ActionResult<Family>> GetFamily([FromRoute] int id)
+            public async Task<ActionResult<Adult>> GetAdult([FromRoute] int id)
             {
                 try
                 {
-                    Family family = await familyService.GetFamilyAsync(id);
-                    return Ok(family);
+                    Adult adult = await _adultServices.GetAdultAsync(id);
+                    return Ok(adult);
                 }
                 catch (Exception e)
                 {
@@ -59,44 +53,47 @@ namespace WebAPI.Controllers
             }
 
             [HttpPost]
-            public async Task<ActionResult<Family>> AddFamily([FromBody] Family family)
+            public async Task<ActionResult<Adult>> AddAdult([FromBody] Adult adult)
             {
                 try
                 {
-                    Family added = await familyService.AddFamilyAsync(family);
+                    Adult added = await _adultServices.AddAdultAsync(adult);
                     return Created($"/{added.Id}", added);
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);  
                     return StatusCode(500, e.Message);
                 }
             }
 
             [HttpPut]
-            public async Task<ActionResult<Family>> UpdateFamily([FromBody] Family family)
+            public async Task<ActionResult<Adult>> UpdateAdult([FromBody] Adult adult)
             {
                 try
                 {
-                    Family familyUpdated = await familyService.UpdateAsync(family);
-                    return Ok(familyUpdated);
+                    Adult adultUpdated = await _adultServices.UpdateAdultAsync(adult);
+                    return Ok(adultUpdated);
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     return StatusCode(500, e.Message);
                 }
             }
 
             [HttpDelete]
             [Route("{id:int}")]
-            public async Task<ActionResult<Family>> DeleteFamily([FromRoute] int id)
+            public async Task<ActionResult<Family>> DeteleAdult([FromRoute] int id)
             {
                 try
                 {
-                    Family deletedFamily = await familyService.RemoveFamilyAsync(id);
-                    return Ok(deletedFamily);
+                    Adult deletedAdult = await _adultServices.RemoveAdultAsync(id);
+                    return Ok(deletedAdult);
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e.Message);
                     return StatusCode(500, e.Message);
                 }
             }

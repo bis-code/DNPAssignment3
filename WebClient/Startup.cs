@@ -1,9 +1,11 @@
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
+using Models;
 using WebClient.Authentication;
 using WebClient.Data;
 using WebClient.Data.HttpServices;
@@ -27,6 +29,9 @@ namespace WebClient
             services.AddServerSideBlazor();
             services.AddScoped<IFamilyService, FamilyWebService>();
             services.AddScoped<IUserService, InMemoryWebService>();
+            services.AddScoped<IChildServices, ChildWebServices>();
+            services.AddScoped<IPetServices, PetWebServices>();
+            services.AddScoped<IAdultServices, AdultWebServices>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
         }

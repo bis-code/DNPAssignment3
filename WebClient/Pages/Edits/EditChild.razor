@@ -2,53 +2,55 @@
 @using Models
 @using Microsoft.AspNetCore.Components
 @using WebClient.Data
-@inject IFamilyService familyService
+@inject IChildServices ChildServices
 @inject NavigationManager NavigationManager
 <h3>EditChild, Id @IdChild</h3>
 <EditForm Model="@childToEdit">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputFirstname">First name</label>
-                <input type="text" class="form-control" id="inputFirstname" @bind-value="childToEdit.FirstName"/>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="inputLastname">Last name</label>
-                <input type="text" class="form-control" id="inputLastname" @bind-value="childToEdit.LastName"/>
-            </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputFirstname">First name</label>
+            <input type="text" class="form-control" id="inputFirstname" @bind-value="childToEdit.FirstName"/>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputHairColor">Hair Color</label>
-                <input type="text" class="form-control" id="inputHairColor" @bind-value="childToEdit.HairColor"/>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="inputEyeColor">Eye Color</label>
-                <input type="text" class="form-control" id="inputEyeColor" @bind-value="childToEdit.EyeColor"/>
-            </div>
+        <div class="form-group col-md-6">
+            <label for="inputLastname">Last name</label>
+            <input type="text" class="form-control" id="inputLastname" @bind-value="childToEdit.LastName"/>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputAge">Age</label>
-                <input type="number" class="form-control col-md-2" @bind-value="childToEdit.Age"/>
-            </div>
-            <div class="form-group col-md-2">
-                <label for="inputSex">Sex</label>
-                <input type="text" class="form-control" id="inputSex" @bind-value="childToEdit.Sex"/>
-            </div>
-            <div class="form-group col-md-2">
-                <label for="inputWeight">Weight</label>
-                <input type="text" class="form-control" id="inputWeight" @bind-value="childToEdit.Weight"/>
-            </div>
-            <div class="form-group col-md-2">
-                <label for="inputHeight">Height</label>
-                <input type="text" class="form-control" id="inputHeight" @bind-value="childToEdit.Height"/>
-            </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputHairColor">Hair Color</label>
+            <input type="text" class="form-control" id="inputHairColor" @bind-value="childToEdit.HairColor"/>
         </div>
-        <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
-        <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
-    </EditForm>
+        <div class="form-group col-md-6">
+            <label for="inputEyeColor">Eye Color</label>
+            <input type="text" class="form-control" id="inputEyeColor" @bind-value="childToEdit.EyeColor"/>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputAge">Age</label>
+            <input type="number" class="form-control col-md-2" @bind-value="childToEdit.Age"/>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="inputSex">Sex</label>
+            <input type="text" class="form-control" id="inputSex" @bind-value="childToEdit.Sex"/>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="inputWeight">Weight</label>
+            <input type="text" class="form-control" id="inputWeight" @bind-value="childToEdit.Weight"/>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="inputHeight">Height</label>
+            <input type="text" class="form-control" id="inputHeight" @bind-value="childToEdit.Height"/>
+        </div>
+    </div>
+    <div style="color: red">@errorMessage</div>
+    <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
+    <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+</EditForm>
 
 @code {
+    private string errorMessage;
 
     [Parameter]
     public int IdFamily { get; set; }
@@ -57,45 +59,47 @@
     public int IdChild { get; set; }
 
     private Child childToEdit = new Child();
-    private Family _family = new Family();
 
     protected override async Task OnParametersSetAsync()
     {
-        _family = await familyService.GetFamilyAsync(IdFamily);
-        for (int i = 0; i < _family.Children.Count; i++)
+        try
         {
-            if (_family.Children[i].Id == IdChild)
-            {
-                childToEdit = _family.Children[i];
-            }
+            childToEdit = await ChildServices.GetChildAsync(IdChild);
+        }
+
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
         }
     }
 
     public void Save()
     {
-        for (int i = 0; i < _family.Children.Count; i++)
+        try
         {
-            if (_family.Children[i].Id == childToEdit.Id)
-            {
-                _family.Children.Remove(_family.Children[i]);
-                _family.Children.Add(childToEdit);
-            }
+            ChildServices.UpdateChildAsync(childToEdit);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        familyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
     public void Remove()
     {
-        for (int i = 0; i < _family.Children.Count; i++)
+        try
         {
-            if (_family.Children[i].Id == childToEdit.Id)
-            {
-                _family.Children.Remove(_family.Children[i]);
-            }
+            ChildServices.RemoveChildAsync(IdChild);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        familyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

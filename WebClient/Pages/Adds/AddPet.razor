@@ -3,7 +3,8 @@
 @using WebClient.Data
 @using System.Runtime.CompilerServices
 @using System.Collections.Immutable
-@inject IFamilyService FamilyService 
+@inject IFamilyService FamilyService
+@inject IChildServices ChildServices
 @inject NavigationManager NavigationManager
 
 @if (_family == null)
@@ -16,7 +17,7 @@ else if (_child == null)
 {
     <div class="text-center">
         <h1>This child does not exist.</h1>
-    </div> 
+    </div>
 }
 else
 {
@@ -38,17 +39,20 @@ else
                     <input type="number" placeholder="Age" class="form-control" @bind-value="_newPet.Age"/>
                 </div>
             </div>
-        <div class="form-group">
-                        <button class="btn btn-primary btn-sm" @onclick="AddPetForChild">Add</button>
-                    </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" @onclick="AddPetForChild">Add</button>
+            </div>
+            <div style="color:red">@errorMessage</div>
         </EditForm>
     </div>
 }
 
 @code {
+    private string errorMessage;
 
     [Parameter]
     public int IdFamily { get; set; }
+
     [Parameter]
     public int IdChild { get; set; }
 
@@ -59,21 +63,30 @@ else
     protected override async Task OnParametersSetAsync()
     {
         _family = await FamilyService.GetFamilyAsync(IdFamily);
-        _child = _family.Children.FirstOrDefault(c => c.Id == IdChild);
+        _child = await ChildServices.GetChildAsync(IdChild);
     }
 
     public void AddPetForChild()
     {
-        for (int i = 0; i < _family.Children.Count; i++)
+        errorMessage = "";
+        try
         {
-            var child = _family.Children[i];
-            if (child.Id == _child.Id)
+            for (int i = 0; i < _family.Children.Count; i++)
             {
-                child.Pets.Add(_newPet);
+                var child = _family.Children[i];
+                if (child.Id == _child.Id)
+                {
+                    child.Pets.Add(_newPet);
+                }
             }
+            FamilyService.UpdateAsync(_family);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        FamilyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

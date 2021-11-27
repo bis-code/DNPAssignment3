@@ -87,9 +87,19 @@ else
 
     public void AddChildToFamily()
     {
-        _family.Children.Add(_newChild);
-        FamiliesService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        errorMessage = "";
+        try
+        {
+            _family.Children.Add(_newChild);
+            FamiliesService.UpdateAsync(_family);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
+        
     }
 
 }

@@ -48,7 +48,7 @@ namespace WebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     JobTitle = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Salary = table.Column<int>(type: "INTEGER", nullable: false),
-                    FamilyId = table.Column<int>(type: "INTEGER", nullable: true),
+                    FamilyId = table.Column<int>(type: "INTEGER", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     HairColor = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
@@ -67,7 +67,7 @@ namespace WebAPI.Migrations
                         column: x => x.FamilyId,
                         principalTable: "Families",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,7 +76,7 @@ namespace WebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FamilyId = table.Column<int>(type: "INTEGER", nullable: true),
+                    FamilyId = table.Column<int>(type: "INTEGER", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     HairColor = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
@@ -95,7 +95,7 @@ namespace WebAPI.Migrations
                         column: x => x.FamilyId,
                         principalTable: "Families",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,10 +125,10 @@ namespace WebAPI.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ChildId = table.Column<int>(type: "INTEGER", nullable: false),
                     Species = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Age = table.Column<int>(type: "INTEGER", nullable: false),
-                    ChildId = table.Column<int>(type: "INTEGER", nullable: true),
                     FamilyId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -139,7 +139,7 @@ namespace WebAPI.Migrations
                         column: x => x.ChildId,
                         principalTable: "Children",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Pets_Families_FamilyId",
                         column: x => x.FamilyId,

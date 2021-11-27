@@ -3,7 +3,7 @@
 @using WebClient.Data
 @using System.Runtime.CompilerServices
 @using System.Collections.Immutable
-@inject IFamilyService FamilyService 
+@inject IFamilyService FamilyService
 @inject NavigationManager NavigationManager
 
 @if (_family == null)
@@ -32,14 +32,16 @@ else
                     <input type="number" placeholder="Age" class="form-control" @bind-value="_newPet.Age"/>
                 </div>
             </div>
-        <div class="form-group">
-                        <button class="btn btn-primary btn-sm" @onclick="AddPetForFamily">Add</button>
-                    </div>
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" @onclick="AddPetForFamily">Add</button>
+            </div>
+            <div style="color:red">@errorMessage</div>
         </EditForm>
     </div>
 }
 
 @code {
+    private string errorMessage;
 
     [Parameter]
     public int IdFamily { get; set; }
@@ -54,9 +56,18 @@ else
 
     public void AddPetForFamily()
     {
-        _family.Pets.Add(_newPet);
-        FamilyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        errorMessage = "";
+        try
+        {
+            _family.Pets.Add(_newPet);
+            FamilyService.UpdateAsync(_family);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

@@ -14,7 +14,7 @@ namespace WebClient.Data
 
         Task<Family> RemoveFamilyAsync(int id);
 
-        Task UpdateAsync(Family family);
+        Task<Family> UpdateAsync(Family family);
         
         
         // Task<IList<Family>> GetFamiliesAsync();

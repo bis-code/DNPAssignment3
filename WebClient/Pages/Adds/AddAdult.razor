@@ -1,7 +1,7 @@
 ﻿@page "/AddAdult/{IdFamily:int}"
 @using Models
 @using WebClient.Data
-@inject IFamilyService FamiliesService
+@inject IFamilyService FamilyServices
 @inject NavigationManager NavigationManager
 
 @if (_family == null)
@@ -61,9 +61,8 @@ else
     
                </div>
                <div class="form-group col-md-4">
-                                   <span class="input-group-text">Salary</span>
-                                   <input type="number" class="form-control" @bind-value="_newAdult.Salary"/>
-                   
+                   <span class="input-group-text">Salary</span>
+                   <input type="number" class="form-control" @bind-value="_newAdult.Salary"/>
                </div>
            </div>
            <div class="form-group">
@@ -85,14 +84,23 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        _family = await FamiliesService.GetFamilyAsync(IdFamily);
+        _family = await FamilyServices.GetFamilyAsync(IdFamily);
     }
 
     public void AddAdultToFamily()
     {
-        _family.Adults.Add(_newAdult);
-        FamiliesService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        errorMessage = "";
+        try
+        {
+            _family.Adults.Add(_newAdult);
+            FamilyServices.UpdateAsync(_family);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
         
     }
 

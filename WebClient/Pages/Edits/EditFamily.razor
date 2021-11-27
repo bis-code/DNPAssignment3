@@ -23,12 +23,14 @@ else
                 <input type="text" class="form-control" id="inputHousenumber" @bind-value="familyToEdit.HouseNumber"/>
             </div>
         </div>
+        <div style="color:red">@errorMessage</div>
         <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
     </EditForm>
 }
 
 @code {
 
+    private string errorMessage;
     [Parameter]
     public int Id { get; set; }
 
@@ -37,14 +39,32 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        familyToEdit = await familyService.GetFamilyAsync(Id);
-        _families = await familyService.GetAllFamiliesAsync();
+        errorMessage = "";
+        try
+        {
+            familyToEdit = await familyService.GetFamilyAsync(Id);
+            _families = await familyService.GetAllFamiliesAsync();
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
     public void Save()
     {
-        familyService.UpdateAsync(familyToEdit);
-        NavigationManager.NavigateTo($"/FamilyInfo/{Id}");
+        errorMessage = "";
+        try
+        {
+            familyService.UpdateAsync(familyToEdit);
+            NavigationManager.NavigateTo($"/FamilyInfo/{Id}");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

@@ -2,12 +2,12 @@
 @using WebClient.Data
 @using Microsoft.AspNetCore.Components
 @using Models
-@inject IFamilyService FamilyService
+@inject IPetServices PetServices
 @inject NavigationManager NavigationManager
 @if (_petToEdit == null)
 {
     <div class="text-center">
-        <h1>There's no child with this Id...</h1>
+        <h1>There's no pet with this Id...</h1>
     </div>
 }
 else
@@ -21,7 +21,7 @@ else
             <div class="form-group col-md-4">
             </div>
             <div class="form-group col-md-2">
-                        </div>
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
@@ -33,88 +33,76 @@ else
                 <input type="number" class="form-control" id="inputSex" @bind-value="_petToEdit.Age"/>
             </div>
             <div class="form-group col-md-2">
-              
+
             </div>
             <div class="form-group col-md-2">
-               
+
             </div>
         </div>
+        <div style="color:red">@errorMessage</div>
         <button type="submit" class="btn btn-primary" @onclick="Save">Edit</button>
-                  <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
+        <button type="submit" class="btn btn-warning" @onclick="Remove">Remove</button>
 
     </EditForm>
 }
 
 @code {
+    private string errorMessage;
 
     [Parameter]
     public int IdFamily { get; set; }
-    
+
     [Parameter]
     public int IdChild { get; set; }
-    
+
     [Parameter]
     public int IdPet { get; set; }
 
     private Pet _petToEdit = new Pet();
-    private Family _family = new Family();
 
     protected override async Task OnParametersSetAsync()
     {
-        _family = await FamilyService.GetFamilyAsync(IdFamily);
-        for (int i = 0; i < _family.Children.Count; i++)
+        errorMessage = "";
+        try
         {
-            if (_family.Children[i].Id == IdChild)
-            {
-                var child = _family.Children[i];
-                for (int j = 0; i < child.Pets.Count; j++)
-                {
-                    if (child.Pets[j].Id == IdPet)
-                    {
-                        _petToEdit = child.Pets[j];
-                    }
-                }
-            }
+            _petToEdit = await PetServices.GetPetAsync(IdPet);
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
         }
     }
 
     public void Save()
     {
+        errorMessage = "";
 
-        for (int i = 0; i < _family.Children.Count; i++)
+        try
         {
-            if (_family.Children[i].Id == IdChild)
-            {
-                var child = _family.Children[i];
-                for (int j = 0; i < child.Pets.Count; j++)
-                {
-                    if (child.Pets[j].Id == _petToEdit.Id)
-                    {
-                        _family.Children[i].Pets.Remove(child.Pets[i]);
-                        _family.Children[i].Pets.Add(_petToEdit);
-                    }
-                }
-            }
-            FamilyService.UpdateAsync(_family);
+            PetServices.UpdatePetAsync(_petToEdit);
             NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
         }
     }
 
     public void Remove()
     {
-        for (int i = 0; i < _family.Children.Count; i++)
+        errorMessage = "";
+        try
         {
-            var child = _family.Children[i];
-            for (int j = 0; i < child.Pets.Count; j++)
-            {
-                if (child.Pets[j].Id == _petToEdit.Id)
-                {
-                    _family.Children[i].Pets.Remove(child.Pets[j]);
-                }
-            }
+            PetServices.RemovePetAsync(IdPet);
+            NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
         }
-        FamilyService.UpdateAsync(_family);
-        NavigationManager.NavigateTo($"/FamilyInfo/{IdFamily}");
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+            Console.WriteLine(e.Message);
+        }
     }
 
 }

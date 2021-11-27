@@ -13,7 +13,6 @@ namespace FileData
         public DbSet<Child> Children { get; set; }
         public DbSet<Pet> Pets { get; set; }
         public DbSet<Adult> Adults { get; set; }
-        public DbSet<Interest> Interests { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

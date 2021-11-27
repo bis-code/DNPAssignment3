@@ -65,10 +65,8 @@ namespace WebClient.Data
             return toRemove;
         }
 
-        public async Task UpdateAsync(Family family)
+        public async Task<Family> UpdateAsync(Family family)
         {
-            List<Adult> adults = new List<Adult>();
-
             // var familyStored = await _databaseContext.Families.Include(f => f.Adults).
             //     ThenInclude(a => a.JobTitle).Include(f => f.Children)
             //     .ThenInclude(c => c.Interests).
@@ -100,6 +98,7 @@ namespace WebClient.Data
             // }
             _databaseContext.Entry(family).State = EntityState.Modified;
             await _databaseContext.SaveChangesAsync();
+            return family;
             Console.WriteLine("Update");
         }
 

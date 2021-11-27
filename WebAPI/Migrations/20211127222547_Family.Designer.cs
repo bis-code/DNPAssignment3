@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211127182102_Family")]
+    [Migration("20211127222547_Family")]
     partial class Family
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace WebAPI.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("FamilyId")
+                    b.Property<int>("FamilyId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -94,7 +94,7 @@ namespace WebAPI.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("FamilyId")
+                    b.Property<int>("FamilyId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -190,7 +190,7 @@ namespace WebAPI.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ChildId")
+                    b.Property<int>("ChildId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("FamilyId")
@@ -260,14 +260,18 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("Models.Family", null)
                         .WithMany("Adults")
-                        .HasForeignKey("FamilyId");
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Child", b =>
                 {
                     b.HasOne("Models.Family", null)
                         .WithMany("Children")
-                        .HasForeignKey("FamilyId");
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Interest", b =>
@@ -281,7 +285,9 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("Models.Child", null)
                         .WithMany("Pets")
-                        .HasForeignKey("ChildId");
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Models.Family", null)
                         .WithMany("Pets")
